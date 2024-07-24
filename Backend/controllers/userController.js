@@ -1,5 +1,6 @@
 import User from "../model/userModel.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const signupFunction = async (req, res, next) => {
   try {
@@ -17,10 +18,14 @@ export const signupFunction = async (req, res, next) => {
       email: email,
       password: hashedPassword,
     });
+    const jwtAuth = jwt.sign(
+      { username, email, id: response._id },
+      process.env.JWT_SECRET
+    );
     res.json({
       success: true,
       message: "User info created successfully",
-      data: response,
+      jwtToken: jwtAuth,
     });
   } catch (error) {
     next(error);
@@ -38,9 +43,11 @@ export const loginFunction = async (req, res, next) => {
     if (!isValidPasswd) {
       throw new Error("Invalid Password");
     }
+    const jwtToken = jwt.sign({ email, id: isExists._id }, process.env.JWT_SECRET);
     res.json({
       success: true,
       message: "Login successfull",
+      jwtToken: jwtToken,
     });
   } catch (error) {
     next(error);
