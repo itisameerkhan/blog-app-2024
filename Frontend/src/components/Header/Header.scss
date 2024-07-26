@@ -1,0 +1,28 @@
+.header-left {
+  h1 {
+    font-family: "Acme";
+  }
+}
+.header {
+  position: fixed;
+  top: 0;
+  border: 2px solid white;
+  width: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #505050;
+}
+.header-temp {
+  height: 70px;
+}
+.header-right {
+  span {
+    border: 2px solid white;
+    border-radius: 50%;
+    padding: .5rem;
+    cursor: pointer;
+    background-color: gray;
+  }
+}

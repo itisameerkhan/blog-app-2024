@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./Login.scss";
 import { Snackbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [userData, setUserData] = useState({
@@ -15,27 +16,45 @@ const Login = () => {
     message: "",
   });
   const [pwdStatus, setPwdStatus] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       if (loginState === "signup") {
+        const formData = new FormData();
+        formData.append("image", profile);
+        const imageUpload = await axios.post(
+          "http://localhost:8080/api/user/profile-upload",
+          formData,
+          {
+            "Content-type": "multipart/form-data",
+          }
+        );
+        console.log(imageUpload.data.data.image);
         const response = await fetch("http://localhost:8080/api/user/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(userData),
+          body: JSON.stringify({
+            username: userData.username,
+            email: userData.email,
+            password: userData.password,
+            imageURL: imageUpload.data.data.image,
+          }),
         });
         const json = await response.json();
-        console.log(json);
         if (!json.success) {
           setSnackStatus({
             open: true,
             message: json.message,
           });
+          setIsLoading(false);
           return;
         }
         localStorage.setItem("blog-app-jwtToken", json.jwtToken);
@@ -56,13 +75,18 @@ const Login = () => {
             open: true,
             message: json.message,
           });
+          setIsLoading(false);
+
           return;
         }
+        console.log(json);
         localStorage.setItem("blog-app-jwtToken", json.jwtToken);
+        setIsLoading(false);
         navigate("/home");
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
@@ -134,7 +158,26 @@ const Login = () => {
                 </span>
               </div>
             </div>
-            <button>SUBMIT</button>
+            {loginState === "signup" && (
+              <div className="pfp-upload">
+                <label>profile</label>
+                <input
+                  required
+                  type="file"
+                  onChange={(e) => setProfile(e.target.files[0])}
+                  accept="image/png, image/jpeg, image/jpg"
+                />
+              </div>
+            )}
+            <button className="submit-btn">
+              {isLoading ? (
+                <div className="loader-main">
+                  <div className="loader"></div>
+                </div>
+              ) : (
+                "SUBMIT"
+              )}
+            </button>
             <div className="already-acc">
               {loginState === "signup" ? (
                 <p onClick={() => setLoginState("login")}>

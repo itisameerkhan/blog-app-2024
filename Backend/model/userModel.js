@@ -13,6 +13,9 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  imageURL: {
+    type: String,
+  },
 });
 
 export default mongoose.model("User", userSchema);
