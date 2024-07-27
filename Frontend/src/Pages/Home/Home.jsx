@@ -30,7 +30,6 @@ const Home = () => {
       console.log(error);
     }
   };
-
   useEffect(() => {
     if (!localStorage.getItem("blog-app-jwtToken")) {
       navigate("/");
