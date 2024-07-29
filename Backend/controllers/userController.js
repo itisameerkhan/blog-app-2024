@@ -22,7 +22,7 @@ export const signupFunction = async (req, res, next) => {
       imageURL: imageURL,
     });
     const jwtAuth = jwt.sign(
-      { username, email, id: response._id },
+      { username, email, id: response._id, imageURL: isExists.imageURL },
       process.env.JWT_SECRET
     );
     res.json({
@@ -47,7 +47,7 @@ export const loginFunction = async (req, res, next) => {
       throw new Error("Invalid Password");
     }
     const jwtToken = jwt.sign(
-      { email, id: isExists._id },
+      { email, id: isExists._id, imageURL: isExists.imageURL },
       process.env.JWT_SECRET
     );
     res.json({

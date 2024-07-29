@@ -68,8 +68,6 @@ const Login = () => {
           body: JSON.stringify(userData),
         });
         const json = await response.json();
-        console.log(json);
-        console.log("login function");
         if (!json.success) {
           setSnackStatus({
             open: true,
@@ -79,7 +77,6 @@ const Login = () => {
 
           return;
         }
-        console.log(json);
         localStorage.setItem("blog-app-jwtToken", json.jwtToken);
         setIsLoading(false);
         navigate("/home");
